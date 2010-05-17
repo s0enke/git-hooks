@@ -1,0 +1,30 @@
+PHP Codesniffer Pre-Commit Hook for GIT
+
+Author: Soenke Ruempler <soenke@ruempler.eu>
+Website: http://github.com/s0enke/git-hooks
+
+REQUIREMENTS
+
+ * Bash
+ * PHP CodeSniffer: http://pear.php.net/package/PHP_CodeSniffer/redirected
+
+
+FEATURES
+
+ * Check Coding style and forbid the commit if violations are found
+ * Configuration file for Coding Standard, Path to PHPCS, Ignore List
+ * Shows output in a 'less' pipe following the smart git principles
+
+
+USAGE
+
+ * Put the script "pre-commit" into your .git/hooks directory 
+ * OR: add the script to your pre-commit "chain" (you probably know what to do then)
+ * Put the Config file "config" into the same dir as the "pre-commit" script and
+   edit it to your requirements
+
+
+BUGS / ISSUES
+
+ * Does not work with "git commit <FILE> ..." because the <FILE>s don't get staged
+   and therefore git-diff-index does not work. Any help appreciated
