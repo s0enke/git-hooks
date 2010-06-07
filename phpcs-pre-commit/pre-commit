@@ -34,8 +34,12 @@ fi
 # retrieve all files in staging area that are added, modified or renamed
 # but no deletions etc
 FILES=$(git diff-index --name-only --cached --diff-filter=ACMR $against -- )
-# execute the code sniffer
 
+if [ "$FILES" == "" ]; then
+    exit 0
+fi
+
+# execute the code sniffer
 if [ "$PHPCS_IGNORE" != "" ]; then
     IGNORE="--ignore=$PHPCS_IGNORE"
 else
