@@ -9,5 +9,5 @@ PHPCS_CODING_STANDARD=PEAR
 PHPCS_IGNORE=
 
 # egrep compatible pattern of  files to be checked
-PHPCS_FILE_PATTERN="(php|phtml)$"
+PHPCS_FILE_PATTERN="\.(php|phtml)$"
 
