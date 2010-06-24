@@ -39,6 +39,22 @@ if [ "$FILES" == "" ]; then
     exit 0
 fi
 
+# match files against whitelist
+FILES_TO_CHECK=""
+for FILE in $FILES
+do
+    egrep -q "$PHPCS_FILE_PATTERN" $FILE
+    RETVAL=$?
+    if [ "$RETVAL" -eq "0" ]
+    then
+        FILES_TO_CHECK="$FILES_TO_CHECK $FILE"
+    fi
+done
+
+if [ "$FILES_TO_CHECK" == "" ]; then
+    exit 0
+fi
+
 # execute the code sniffer
 if [ "$PHPCS_IGNORE" != "" ]; then
     IGNORE="--ignore=$PHPCS_IGNORE"
@@ -46,7 +62,7 @@ else
     IGNORE=""
 fi
 
-OUTPUT=$($PHPCS_BIN -s --standard=$PHPCS_CODING_STANDARD $IGNORE $FILES)
+OUTPUT=$($PHPCS_BIN -s --standard=$PHPCS_CODING_STANDARD $IGNORE $FILES_TO_CHECK)
 RETVAL=$?
 
 if [ $RETVAL -ne 0 ]; then

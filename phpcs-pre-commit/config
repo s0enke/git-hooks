@@ -8,3 +8,6 @@ PHPCS_CODING_STANDARD=PEAR
 # comma-separated list of file patterns being ignored
 PHPCS_IGNORE=
 
+# egrep compatible pattern of  files to be checked
+PHPCS_FILE_PATTERN="(php|phtml)$"
+
