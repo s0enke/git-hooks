@@ -43,7 +43,7 @@ fi
 FILES_TO_CHECK=""
 for FILE in $FILES
 do
-    egrep -q "$PHPCS_FILE_PATTERN" $FILE
+    echo "$FILE" | egrep -q "$PHPCS_FILE_PATTERN"
     RETVAL=$?
     if [ "$RETVAL" -eq "0" ]
     then
