@@ -9,8 +9,7 @@
 PHPCS_BIN=/usr/bin/phpcs
 PHPCS_CODING_STANDARD=PEAR
 PHPCS_IGNORE=
-OUTPUT=""
-PROHIBIT_COMMIT=0
+TMP_STAGING=".tmp_staging"
 
 # parse config
 CONFIG_FILE=$(dirname $0)/config
@@ -42,6 +41,12 @@ if [ "$FILES" == "" ]; then
     exit 0
 fi
 
+# create temporary copy of staging area
+if [ -e $TMP_STAGING ]; then
+    rm -rf $TMP_STAGING
+fi
+mkdir $TMP_STAGING
+
 # match files against whitelist
 FILES_TO_CHECK=""
 for FILE in $FILES
@@ -65,24 +70,27 @@ else
     IGNORE=""
 fi
 
-# Run phpcs on staged content of every staged file
+# Copy contents of staged files to temporary staging area
+STAGED_FILES=""
 for FILE in $FILES_TO_CHECK
 do
   ID=`git diff-index --cached HEAD $FILE | cut -d " " -f4`
-  git cat-file blob $ID > phpcs.tmp
-  PHPCS_OUTPUT=`$PHPCS_BIN -s --standard=$PHPCS_CODING_STANDARD $IGNORE phpcs.tmp`
-  RETVAL=$?
-  if [ $RETVAL -ne 0 ]; then
-    OUTPUT="SRC:  $FILE$PHPCS_OUTPUT\n\n$OUTPUT"
-    PROHIBIT_COMMIT="$RETVAL"
-  fi
-  rm phpcs.tmp
+
+  # create staged version of file in temporary staging area
+  mkdir -p "$TMP_STAGING/`dirname $FILE`"
+  git cat-file blob $ID > "$TMP_STAGING/$FILE"
+  STAGED_FILES="$STAGED_FILES $TMP_STAGING/$FILE"
 done
 
-if [ $PROHIBIT_COMMIT -ne 0 ]; then
-  echo -e "$OUTPUT" | less
+OUTPUT=$($PHPCS_BIN -s --standard=$PHPCS_CODING_STANDARD $IGNORE $STAGED_FILES)
+RETVAL=$?
+
+# delete temporary copy of staging area
+rm -rf $TMP_STAGING
+
+if [ $RETVAL -ne 0 ]; then
+    echo "$OUTPUT" | less
 fi
 
-exit $PROHIBIT_COMMIT
-
+exit $RETVAL
 
