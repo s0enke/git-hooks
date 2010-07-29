@@ -70,14 +70,17 @@ else
     IGNORE=""
 fi
 
-# Copy contents of staged files to temporary staging area
+# Copy contents of staged version of files to temporary staging area
+# because we only want the staged version that will be commited and not
+# the version in the working directory
 STAGED_FILES=""
 for FILE in $FILES_TO_CHECK
 do
-  ID=`git diff-index --cached HEAD $FILE | cut -d " " -f4`
+  ID=$(git diff-index --cached HEAD $FILE | cut -d " " -f4)
 
-  # create staged version of file in temporary staging area
-  mkdir -p "$TMP_STAGING/`dirname $FILE`"
+  # create staged version of file in temporary staging area with the same
+  # path as the original file so that the phpcs ignore filters can be applied
+  mkdir -p "$TMP_STAGING/$(dirname $FILE)"
   git cat-file blob $ID > "$TMP_STAGING/$FILE"
   STAGED_FILES="$STAGED_FILES $TMP_STAGING/$FILE"
 done
