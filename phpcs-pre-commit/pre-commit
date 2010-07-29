@@ -2,12 +2,15 @@
 # PHP CodeSniffer pre-commit hook for git
 #
 # @author Soenke Ruempler <soenke@ruempler.eu>
+# @author Sebastian Kaspari <s.kaspari@googlemail.com>
 #
 # see the README
 
 PHPCS_BIN=/usr/bin/phpcs
 PHPCS_CODING_STANDARD=PEAR
 PHPCS_IGNORE=
+OUTPUT=""
+PROHIBIT_COMMIT=0
 
 # parse config
 CONFIG_FILE=$(dirname $0)/config
@@ -62,12 +65,24 @@ else
     IGNORE=""
 fi
 
-OUTPUT=$($PHPCS_BIN -s --standard=$PHPCS_CODING_STANDARD $IGNORE $FILES_TO_CHECK)
-RETVAL=$?
+# Run phpcs on staged content of every staged file
+for FILE in $FILES_TO_CHECK
+do
+  ID=`git diff-index --cached HEAD $FILE | cut -d " " -f4`
+  git cat-file blob $ID > phpcs.tmp
+  PHPCS_OUTPUT=`$PHPCS_BIN -s --standard=$PHPCS_CODING_STANDARD $IGNORE phpcs.tmp`
+  RETVAL=$?
+  if [ $RETVAL -ne 0 ]; then
+    OUTPUT="SRC:  $FILE$PHPCS_OUTPUT\n\n$OUTPUT"
+    PROHIBIT_COMMIT="$RETVAL"
+  fi
+  rm phpcs.tmp
+done
 
-if [ $RETVAL -ne 0 ]; then
-    echo "$OUTPUT" | less
+if [ $PROHIBIT_COMMIT -ne 0 ]; then
+  echo -e "$OUTPUT" | less
 fi
 
-exit $RETVAL
+exit $PROHIBIT_COMMIT
+
 
