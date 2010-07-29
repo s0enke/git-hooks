@@ -23,8 +23,3 @@ USAGE
  * Put the Config file "config" into the same dir as the "pre-commit" script and
    edit it to your requirements
 
-
-BUGS / ISSUES
-
- * Does not work with "git commit <FILE> ..." because the <FILE>s don't get staged
-   and therefore git-diff-index does not work. Any help appreciated
