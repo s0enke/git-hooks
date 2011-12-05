@@ -70,6 +70,18 @@ else
     IGNORE=""
 fi
 
+if [ "$PHPCS_ENCODING" != "" ]; then
+    ENCODING="--encoding=$PHPCS_ENCODING"
+else
+    ENCODING=""
+fi
+
+if [ "$PHPCS_IGNORE_WARNINGS" == "1" ]; then
+    IGNORE_WARNINGS="-n"
+else
+    IGNORE_WARNINGS=""
+fi
+
 # Copy contents of staged version of files to temporary staging area
 # because we only want the staged version that will be commited and not
 # the version in the working directory
@@ -85,7 +97,7 @@ do
   STAGED_FILES="$STAGED_FILES $TMP_STAGING/$FILE"
 done
 
-OUTPUT=$($PHPCS_BIN -s --standard=$PHPCS_CODING_STANDARD $IGNORE $STAGED_FILES)
+OUTPUT=$($PHPCS_BIN -s $IGNORE_WARNINGS  --standard=$PHPCS_CODING_STANDARD $ENCODING $IGNORE $STAGED_FILES)
 RETVAL=$?
 
 # delete temporary copy of staging area
@@ -96,4 +108,3 @@ if [ $RETVAL -ne 0 ]; then
 fi
 
 exit $RETVAL
-

@@ -11,3 +11,8 @@ PHPCS_IGNORE=
 # egrep compatible pattern of  files to be checked
 PHPCS_FILE_PATTERN="\.(php|phtml)$"
 
+# ignore warnings
+PHPCS_IGNORE_WARNINGS=1
+
+# encoding
+PHPCS_ENCODING=utf-8
