@@ -70,6 +70,12 @@ else
     IGNORE=""
 fi
 
+if [ "$PHPCS_SNIFFS" != "" ]; then
+    SNIFFS="--sniffs=$PHPCS_SNIFFS"
+else
+    SNIFFS=""
+fi
+
 if [ "$PHPCS_ENCODING" != "" ]; then
     ENCODING="--encoding=$PHPCS_ENCODING"
 else
@@ -97,7 +103,7 @@ do
   STAGED_FILES="$STAGED_FILES $TMP_STAGING/$FILE"
 done
 
-OUTPUT=$($PHPCS_BIN -s $IGNORE_WARNINGS  --standard=$PHPCS_CODING_STANDARD $ENCODING $IGNORE $STAGED_FILES)
+OUTPUT=$($PHPCS_BIN -s $IGNORE_WARNINGS --standard=$PHPCS_CODING_STANDARD $ENCODING $IGNORE $SNIFFS $STAGED_FILES)
 RETVAL=$?
 
 # delete temporary copy of staging area

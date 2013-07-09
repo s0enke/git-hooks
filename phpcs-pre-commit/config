@@ -8,6 +8,10 @@ PHPCS_CODING_STANDARD=PEAR
 # comma-separated list of file patterns being ignored
 PHPCS_IGNORE=
 
+# comma-seperated list of sniffs from the standard that should be used
+# use `phpcs --standard=PSR1 -e` to list sniffs for your standard
+PHPCS_SNIFFS=Generic.Files.ByteOrderMark,Generic.PHP.DisallowShortOpenTag
+
 # egrep compatible pattern of  files to be checked
 PHPCS_FILE_PATTERN="\.(php|phtml)$"
 
