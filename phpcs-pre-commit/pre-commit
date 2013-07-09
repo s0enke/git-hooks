@@ -94,7 +94,7 @@ fi
 STAGED_FILES=""
 for FILE in $FILES_TO_CHECK
 do
-  ID=$(git diff-index --cached HEAD $FILE | cut -d " " -f4)
+  ID=$(git diff-index --cached $against $FILE | cut -d " " -f4)
 
   # create staged version of file in temporary staging area with the same
   # path as the original file so that the phpcs ignore filters can be applied
